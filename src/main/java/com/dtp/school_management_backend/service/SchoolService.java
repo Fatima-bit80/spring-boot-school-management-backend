@@ -1,8 +1,8 @@
 package com.dtp.school_management_backend.service;
 
-import com.example.schoolManagement.dto.CourseDTO;
-import com.example.schoolManagement.dto.GradesForm;
-import com.example.schoolManagement.entity.*;
+
+import com.dtp.school_management_backend.dto.*;
+import com.dtp.school_management_backend.entity.*;
 
 import java.util.List;
 

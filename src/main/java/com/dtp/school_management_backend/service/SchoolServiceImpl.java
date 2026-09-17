@@ -1,10 +1,9 @@
 package com.dtp.school_management_backend.service;
 
-import com.example.schoolManagement.dao.*;
-import com.example.schoolManagement.dto.CourseDTO;
-import com.example.schoolManagement.dto.GradeRow;
-import com.example.schoolManagement.dto.GradesForm;
-import com.example.schoolManagement.entity.*;
+
+import com.dtp.school_management_backend.dao.*;
+import com.dtp.school_management_backend.dto.*;
+import com.dtp.school_management_backend.entity.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
