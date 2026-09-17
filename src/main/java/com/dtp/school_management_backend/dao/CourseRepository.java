@@ -1,6 +1,6 @@
 package com.dtp.school_management_backend.dao;
 
-import com.example.schoolManagement.entity.Course;
+import com.dtp.school_management_backend.entity.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
