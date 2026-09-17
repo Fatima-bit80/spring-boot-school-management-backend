@@ -1,9 +1,7 @@
 package com.dtp.school_management_backend.dto;
 
-import com.example.schoolManagement.entity.Admin;
-import com.example.schoolManagement.entity.Member;
-import com.example.schoolManagement.entity.Student;
-import com.example.schoolManagement.entity.Teacher;
+
+import com.dtp.school_management_backend.entity.*;
 
 public class SchoolDTO {
 
