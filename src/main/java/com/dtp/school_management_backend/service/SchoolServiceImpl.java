@@ -38,7 +38,7 @@ public class SchoolServiceImpl implements  SchoolService {
 
     @Override
     @Transactional
-    public Student saveStudent(StudentDTO studentDTO) {
+    public StudentDTO saveStudent(StudentDTO studentDTO) {
         Member member = new Member();
         member.setEmail(studentDTO.getEmail());
         member.setPassword(passwordEncoder.encode(studentDTO.getPassword()));
@@ -52,17 +52,39 @@ public class SchoolServiceImpl implements  SchoolService {
         student.setMember(member);
 
         studentRepository.save(student);
-        return student;
+
+        StudentDTO s = new StudentDTO();
+        s.setYear(student.getYear());
+        s.setFirstName(student.getFirstName());
+        s.setLastName(student.getLastName());
+        s.setEmail(student.getMember().getEmail());
+        s.setStudentId(s.getStudentId());
+
+        return s;
     }
 
     @Override
     @Transactional
-    public void saveTeacher(Teacher teacher) {
-        Member member = teacher.getMember();
-        String plainTextPassword = member.getPassword();
-        String encodedPassword = passwordEncoder.encode(plainTextPassword);
-        member.setPassword(encodedPassword);
-        teacherRepository.save(teacher);
+    public TeacherDTO saveTeacher(TeacherDTO teacher) {
+        Member member = new Member();
+        member.setEmail(teacher.getEmail());
+        member.setPassword(passwordEncoder.encode(teacher.getPassword()));
+        member.setActive(1);
+        member.setRole("ROLE_TEACHER");
+
+        Teacher teacher1 = new Teacher();
+        teacher1.setFirstName(teacher.getFirstName());
+        teacher1.setLastName(teacher.getLastName());
+        teacher1.setMember(member);
+        teacherRepository.save(teacher1);
+
+        TeacherDTO teacherDTO = new TeacherDTO();
+        teacherDTO.setEmail(teacher.getEmail());
+        teacherDTO.setFirstName(teacher.getFirstName());
+        teacherDTO.setLastName(teacher.getLastName());
+        teacherDTO.setTeacherId(teacher.getTeacherId());
+
+        return teacherDTO;
     }
 
     @Override
@@ -86,6 +108,7 @@ public class SchoolServiceImpl implements  SchoolService {
             enrollmentDTO.setCourseYear(enrollment.getCourse().getYear());
 enrollmentDTO.setTeacherName(enrollment.getCourse().getTeacher().getFirstName() +" "+enrollment.getCourse().getTeacher().getLastName());
 
+enrollmentDTO.setStudentName(enrollment.getStudent().getFirstName()+" "+enrollment.getStudent().getLastName());
             enrollments.add(enrollmentDTO);
 
         }
@@ -100,13 +123,26 @@ enrollmentDTO.setTeacherName(enrollment.getCourse().getTeacher().getFirstName() 
 
     @Override
     @Transactional
-    public void deleteEnrollment(int studentId,int enrollmentId) {
+    public void deleteEnrollmentOfStudent(int studentId, int enrollmentId) {
         Enrollment e = enrollmentRepository.findById(enrollmentId).get();
         if(e.getStudent().getStudentId() ==  studentId){
             enrollmentRepository.deleteById(enrollmentId);
         }else{
             //todo throw an exception that this enrollment doesn't belong to the student
         }
+    }
+
+    @Override
+    @Transactional
+    public void deleteEnrollmentRequest(int teacherId, int requestId) {
+        Enrollment e = enrollmentRepository.findById(requestId).get();
+
+        if(e.getCourse().getTeacher().getTeacherId() == teacherId){
+            enrollmentRepository.deleteById(requestId);
+        }else {
+            //todo throw an exception that this request isn't for the teacher
+        }
+
     }
 
     @Override
@@ -128,16 +164,46 @@ return enrollmentDTO;
     }
 
     @Override
-    public List<Enrollment> findEnrollmentRequestsForTeacher(int teacherId) {
-        return enrollmentRepository.findEnrollmentRequestsForTeacher(teacherId);
+    public List<EnrollmentDTO> findEnrollmentRequestsForTeacher(int teacherId) {
+
+        List<Enrollment> enrollments = enrollmentRepository.findEnrollmentRequestsForTeacher(teacherId);
+
+        List<EnrollmentDTO> enrollmentDTOs = new ArrayList<>();
+
+        for (Enrollment enrollment : enrollments) {
+            EnrollmentDTO enrollmentDTO = new EnrollmentDTO();
+            enrollmentDTO.setId(enrollment.getId());
+            enrollmentDTO.setCourseCode(enrollment.getCourse().getCode());
+            enrollmentDTO.setCourseName(enrollment.getCourse().getName());
+            enrollmentDTO.setApproved(enrollment.getApproved());
+            enrollmentDTO.setCourseYear(enrollment.getCourse().getYear());
+            enrollmentDTO.setTeacherName(enrollment.getCourse().getTeacher().getFirstName()+" "+enrollment.getCourse().getTeacher().getLastName());
+            enrollmentDTO.setStudentName(enrollment.getStudent().getFirstName()+" "+enrollment.getStudent().getLastName());
+            enrollmentDTOs.add(enrollmentDTO);
+        }
+
+        return enrollmentDTOs;
     }
 
     @Override
     @Transactional
-    public void acceptEnrollmentRequest(int requestId) {
+    public EnrollmentDTO acceptEnrollmentRequest(int requestId,int teacherId) {
         Enrollment e = enrollmentRepository.findById(requestId).get();
-        e.setApproved(1);
-        enrollmentRepository.save(e);
+        if(e.getCourse().getTeacher().getTeacherId() ==  teacherId){
+            e.setApproved(1);
+            enrollmentRepository.save(e);
+        }else{
+            //todo throw an exception that this enrollment doesn't belong to the teacher
+        }
+        EnrollmentDTO enrollmentDTO = new EnrollmentDTO();
+        enrollmentDTO.setId(e.getId());
+        enrollmentDTO.setCourseCode(e.getCourse().getCode());
+        enrollmentDTO.setCourseName(e.getCourse().getName());
+        enrollmentDTO.setApproved(e.getApproved());
+        enrollmentDTO.setCourseYear(e.getCourse().getYear());
+        enrollmentDTO.setStudentName(e.getStudent().getFirstName()+" "+e.getStudent().getLastName());
+        enrollmentDTO.setTeacherName(e.getCourse().getTeacher().getFirstName()+" "+e.getCourse().getTeacher().getLastName());
+        return enrollmentDTO;
     }
 
     @Override
@@ -152,13 +218,42 @@ return enrollmentDTO;
 
     @Override
     @Transactional
-    public void updateGrades(GradesForm gradesForm) {
-        for(GradeRow row : gradesForm.getRows()) {
-            Enrollment e = enrollmentRepository.findById(row.getEnrollmentId()).get();
-            e.setGrade(row.getGrade());
+   public List<EnrollmentDTO> updateGrades(List<GradeDTO> grades,int teacherId) {
 
-enrollmentRepository.save(e);
+        List<EnrollmentDTO> enrollmentDTOs = new ArrayList<>();
+
+        for(GradeDTO row : grades) {
+            Enrollment e = enrollmentRepository.findById(row.getEnrollmentId()).get();
+            if(e.getCourse().getTeacher().getTeacherId() == teacherId) {
+                e.setGrade(row.getGrade());
+                enrollmentRepository.save(e);
+
+                EnrollmentDTO enrollmentDTO = new EnrollmentDTO();
+                enrollmentDTO.setId(e.getId());
+                enrollmentDTO.setCourseCode(e.getCourse().getCode());
+                enrollmentDTO.setCourseName(e.getCourse().getName());
+                enrollmentDTO.setApproved(e.getApproved());
+                enrollmentDTO.setCourseYear(e.getCourse().getYear());
+                enrollmentDTO.setStudentName(e.getStudent().getFirstName()+" "+e.getStudent().getLastName());
+                enrollmentDTO.setTeacherName(e.getCourse().getTeacher().getFirstName()+" "+e.getCourse().getTeacher().getLastName());
+
+                enrollmentDTOs.add(enrollmentDTO);
+
+            }
+
         }
+
+        return enrollmentDTOs;
+    }
+
+    @Override
+    public TeacherDTO findTeacherById(int teacherId) {
+        Teacher t = teacherRepository.findById(teacherId).get();
+        TeacherDTO teacher = new TeacherDTO();
+        teacher.setEmail(t.getMember().getEmail());
+        teacher.setFirstName(t.getFirstName());
+        teacher.setLastName(t.getLastName());
+        return teacher;
     }
 
     @Override
@@ -190,6 +285,8 @@ enrollmentRepository.save(e);
 
         courseRepository.save(course);
     }
+
+    // todo add separate methods to see if enrollment belongs to teacher/ student
 
 
 }

@@ -10,8 +10,8 @@ public interface SchoolService {
 
 
   //accounts:
-  Student saveStudent(StudentDTO student);
-  void saveTeacher(Teacher teacher);
+  StudentDTO saveStudent(StudentDTO student);
+  TeacherDTO saveTeacher(TeacherDTO teacher);
     Member findMemberByEmail(String email);
   List<Teacher> getAllTeachers();
   StudentDTO findStudentById(int id);
@@ -27,10 +27,12 @@ public interface SchoolService {
     List<EnrollmentDTO> findEnrollmentsOfStudent(int studentId);
   List<Enrollment> findEnrollmentsOfCourse(String code);
   EnrollmentDTO saveEnrollment(String courseCode, int studentId);
-  void deleteEnrollment(int studentId,int enrollmentId);
-  List<Enrollment> findEnrollmentRequestsForTeacher(int teacherId);
-  void acceptEnrollmentRequest(int requestId);
-  void updateGrades(GradesForm gradesForm);
+  void deleteEnrollmentOfStudent(int studentId, int enrollmentId);
+  void deleteEnrollmentRequest(int teacherId,int requestId);
+  List<EnrollmentDTO> findEnrollmentRequestsForTeacher(int teacherId);
+  EnrollmentDTO acceptEnrollmentRequest(int requestId,int teacherId);
+  List<EnrollmentDTO> updateGrades(List<GradeDTO> grades,int teacherId);
 
 
+  TeacherDTO findTeacherById(int teacherId);
 }
