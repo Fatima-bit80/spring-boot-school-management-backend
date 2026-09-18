@@ -69,7 +69,7 @@ public class TeacherController {
     }
 
 
-    @PutMapping
+    @PutMapping("/grades")
     public List<EnrollmentDTO> updateGrades(@RequestBody List<GradeDTO> grades,Authentication authentication) {
         String email = authentication.getName();
         Member member = schoolService.findMemberByEmail(email);

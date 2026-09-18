@@ -224,7 +224,7 @@ return enrollmentDTO;
 
         for(GradeDTO row : grades) {
             Enrollment e = enrollmentRepository.findById(row.getEnrollmentId()).get();
-            if(e.getCourse().getTeacher().getTeacherId() == teacherId) {
+            if(e.getCourse().getTeacher().getTeacherId() == teacherId && e.getApproved()==1) {
                 e.setGrade(row.getGrade());
                 enrollmentRepository.save(e);
 
@@ -237,6 +237,7 @@ return enrollmentDTO;
                 enrollmentDTO.setStudentName(e.getStudent().getFirstName()+" "+e.getStudent().getLastName());
                 enrollmentDTO.setTeacherName(e.getCourse().getTeacher().getFirstName()+" "+e.getCourse().getTeacher().getLastName());
 
+                enrollmentDTO.setGrade(e.getGrade());
                 enrollmentDTOs.add(enrollmentDTO);
 
             }
