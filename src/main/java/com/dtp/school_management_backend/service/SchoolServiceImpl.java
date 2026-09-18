@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,13 +38,21 @@ public class SchoolServiceImpl implements  SchoolService {
 
     @Override
     @Transactional
-    public void saveStudent(Student student) {
-        Member member = student.getMember();
-        String plainTextPassword = member.getPassword();
-        String encodedPassword = passwordEncoder.encode(plainTextPassword);
-        member.setPassword(encodedPassword);
+    public Student saveStudent(StudentDTO studentDTO) {
+        Member member = new Member();
+        member.setEmail(studentDTO.getEmail());
+        member.setPassword(passwordEncoder.encode(studentDTO.getPassword()));
+        member.setActive(1);
+        member.setRole("ROLE_STUDENT");
+
+        Student student = new Student();
+        student.setFirstName(studentDTO.getFirstName());
+        student.setLastName(studentDTO.getLastName());
+        student.setYear(studentDTO.getYear());
+        student.setMember(member);
 
         studentRepository.save(student);
+        return student;
     }
 
     @Override
@@ -62,8 +71,26 @@ public class SchoolServiceImpl implements  SchoolService {
     }
 
     @Override
-    public List<Enrollment> findEnrollmentsOfStudent(int studentId) {
-        return enrollmentRepository.findEnrollmentsForStudent(studentId);
+    public List<EnrollmentDTO> findEnrollmentsOfStudent(int studentId) {
+        List<EnrollmentDTO> enrollments = new ArrayList<>();
+
+
+        List<Enrollment> enrollmentList = enrollmentRepository.findEnrollmentsForStudent(studentId);
+
+        for (Enrollment enrollment : enrollmentList) {
+            EnrollmentDTO enrollmentDTO = new EnrollmentDTO();
+            enrollmentDTO.setId(enrollment.getId());
+            enrollmentDTO.setCourseCode(enrollment.getCourse().getCode());
+            enrollmentDTO.setCourseName(enrollment.getCourse().getName());
+            enrollmentDTO.setApproved(enrollment.getApproved());
+            enrollmentDTO.setCourseYear(enrollment.getCourse().getYear());
+enrollmentDTO.setTeacherName(enrollment.getCourse().getTeacher().getFirstName() +" "+enrollment.getCourse().getTeacher().getLastName());
+
+            enrollments.add(enrollmentDTO);
+
+        }
+
+        return enrollments;
     }
 
     @Override
@@ -73,17 +100,31 @@ public class SchoolServiceImpl implements  SchoolService {
 
     @Override
     @Transactional
-    public void deleteEnrollment(int id) {
-        enrollmentRepository.deleteById(id);
+    public void deleteEnrollment(int studentId,int enrollmentId) {
+        Enrollment e = enrollmentRepository.findById(enrollmentId).get();
+        if(e.getStudent().getStudentId() ==  studentId){
+            enrollmentRepository.deleteById(enrollmentId);
+        }else{
+            //todo throw an exception that this enrollment doesn't belong to the student
+        }
     }
 
     @Override
     @Transactional
-    public void saveEnrollment(String courseCode, int studentId) {
+    public EnrollmentDTO saveEnrollment(String courseCode, int studentId) {
         Student student = studentRepository.findById(studentId).get();
         Course course = courseRepository.findById(courseCode).get();
         Enrollment e = new Enrollment(course,student);
         enrollmentRepository.save(e);
+
+        EnrollmentDTO enrollmentDTO = new EnrollmentDTO();
+        enrollmentDTO.setId(e.getId());
+        enrollmentDTO.setCourseCode(courseCode);
+        enrollmentDTO.setCourseName(course.getName());
+        enrollmentDTO.setApproved(e.getApproved());
+        enrollmentDTO.setCourseYear(e.getCourse().getYear());
+        enrollmentDTO.setTeacherName(e.getCourse().getTeacher().getFirstName()+" "+e.getCourse().getTeacher().getLastName());
+return enrollmentDTO;
     }
 
     @Override
@@ -123,6 +164,17 @@ enrollmentRepository.save(e);
     @Override
     public List<Teacher> getAllTeachers() {
         return teacherRepository.findAll();
+    }
+
+    @Override
+    public StudentDTO findStudentById(int id) {
+        Student s = studentRepository.findById(id).get();
+        StudentDTO student = new StudentDTO();
+        student.setEmail(s.getMember().getEmail());
+        student.setFirstName(s.getFirstName());
+        student.setLastName(s.getLastName());
+        student.setYear(s.getYear());
+        return student;
     }
 
     @Override

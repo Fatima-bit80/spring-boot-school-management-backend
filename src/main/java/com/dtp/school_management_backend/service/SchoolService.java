@@ -10,10 +10,11 @@ public interface SchoolService {
 
 
   //accounts:
-  void saveStudent(Student student);
+  Student saveStudent(StudentDTO student);
   void saveTeacher(Teacher teacher);
     Member findMemberByEmail(String email);
   List<Teacher> getAllTeachers();
+  StudentDTO findStudentById(int id);
 
 
   //courses
@@ -23,10 +24,10 @@ public interface SchoolService {
 
 
   //enrollments:
-    List<Enrollment> findEnrollmentsOfStudent(int studentId);
+    List<EnrollmentDTO> findEnrollmentsOfStudent(int studentId);
   List<Enrollment> findEnrollmentsOfCourse(String code);
-  void saveEnrollment(String courseCode, int studentId);
-  void deleteEnrollment(int id);
+  EnrollmentDTO saveEnrollment(String courseCode, int studentId);
+  void deleteEnrollment(int studentId,int enrollmentId);
   List<Enrollment> findEnrollmentRequestsForTeacher(int teacherId);
   void acceptEnrollmentRequest(int requestId);
   void updateGrades(GradesForm gradesForm);
