@@ -2,6 +2,7 @@ package com.dtp.school_management_backend.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -42,6 +43,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(configurer ->
                         configurer
+                                .requestMatchers(HttpMethod.POST,"/api/students").permitAll()
                                 .requestMatchers("/api/admins/**").hasRole("ADMIN")
                                 .requestMatchers("/api/teachers/**").hasRole("TEACHER")
                                  .requestMatchers("/api/students/**").hasRole("STUDENT")
