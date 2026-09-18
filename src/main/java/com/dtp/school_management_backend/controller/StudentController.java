@@ -2,9 +2,7 @@ package com.dtp.school_management_backend.controller;
 
 
 import com.dtp.school_management_backend.dto.*;
-import com.dtp.school_management_backend.entity.Enrollment;
 import com.dtp.school_management_backend.entity.Member;
-import com.dtp.school_management_backend.entity.Student;
 import com.dtp.school_management_backend.service.SchoolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -24,15 +22,23 @@ public class StudentController {
     }
 
     @GetMapping
-    public StudentDTO getStudent( Authentication authentication){
+    public StudentDTO getStudent(Authentication authentication) {
         String email = authentication.getName();
         Member member = schoolService.findMemberByEmail(email);
         int studentId = member.getStudent().getStudentId();
-            return schoolService.findStudentById(studentId);
-                }
+        return schoolService.findStudentById(studentId);
+    }
+
+
+    @PostMapping
+    public StudentDTO createStudentAccount(@RequestBody StudentDTO studentDTO) {
+
+      return schoolService.saveStudent(studentDTO);
+
+    }
 
     @GetMapping("/enrollments")
-    public List<EnrollmentDTO> getEnrollments(Authentication authentication){
+    public List<EnrollmentDTO> getEnrollments(Authentication authentication) {
         String email = authentication.getName();
         Member member = schoolService.findMemberByEmail(email);
         int studentId = member.getStudent().getStudentId();
@@ -41,22 +47,22 @@ public class StudentController {
     }
 
     @DeleteMapping("/enrollments/{courseId}")
-    public void getEnrollments(@PathVariable int courseId,Authentication authentication){
+    public void getEnrollments(@PathVariable int courseId, Authentication authentication) {
         String email = authentication.getName();
         Member member = schoolService.findMemberByEmail(email);
         int studentId = member.getStudent().getStudentId();
 
-        schoolService.deleteEnrollment(studentId,courseId);
+        schoolService.deleteEnrollmentOfStudent(studentId, courseId);
 
     }
 
 
     @PostMapping("enrollments/{courseCode}")
-    public EnrollmentDTO requestEnrollment(@PathVariable String courseCode,Authentication authentication) {
+    public EnrollmentDTO requestEnrollment(@PathVariable String courseCode, Authentication authentication) {
 
         String email = authentication.getName();
         Member member = schoolService.findMemberByEmail(email);
         int studentId = member.getStudent().getStudentId();
-        return schoolService.saveEnrollment(courseCode,studentId);
+        return schoolService.saveEnrollment(courseCode, studentId);
     }
 }
