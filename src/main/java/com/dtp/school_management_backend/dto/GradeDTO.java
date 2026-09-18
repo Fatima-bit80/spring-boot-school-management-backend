@@ -1,17 +1,14 @@
 package com.dtp.school_management_backend.dto;
 
-public class GradeRow {
+public class GradeDTO {
 
     private int enrollmentId;
     private int grade;
 
-    public GradeRow() {
+    public GradeDTO() {
     }
 
-    public GradeRow(int enrollmentId, int grade) {
-        this.enrollmentId = enrollmentId;
-        this.grade = grade;
-    }
+
 
     public int getEnrollmentId() {
         return enrollmentId;
@@ -29,11 +26,5 @@ public class GradeRow {
         this.grade = grade;
     }
 
-    @Override
-    public String toString() {
-        return "GradeRow{" +
-                "enrollmentId=" + enrollmentId +
-                ", grade=" + grade +
-                '}';
-    }
+
 }
