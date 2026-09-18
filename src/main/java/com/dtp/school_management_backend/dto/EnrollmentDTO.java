@@ -22,6 +22,7 @@ public class EnrollmentDTO {
 
     private String teacherName;
 
+    private String studentName;
 
     public EnrollmentDTO() {
     }
@@ -82,6 +83,14 @@ public class EnrollmentDTO {
 
     public void setTeacherName(String teacherName) {
         this.teacherName = teacherName;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
 }
 
