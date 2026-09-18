@@ -3,6 +3,7 @@ package com.dtp.school_management_backend.dto;
 public class StudentDTO {
 
 
+    private int studentId;
     private String firstName;
     private String lastName;
     private String email;
@@ -51,5 +52,13 @@ public class StudentDTO {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public int getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(int studentId) {
+        this.studentId = studentId;
     }
 }
