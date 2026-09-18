@@ -4,27 +4,27 @@ package com.dtp.school_management_backend.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="enrollment")
+@Table(name = "enrollment")
 public class Enrollment {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
-@ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
-@JoinColumn(name="code")
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "code")
     private Course course;
 
-@ManyToOne(    cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
-@JoinColumn(name="student_id")
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "student_id")
     private Student student;
 
-@Column(name = "grade")
+    @Column(name = "grade")
     private int grade;
 
-@Column(name="approved")
-private int approved;
+    @Column(name = "approved")
+    private int approved;
 
     public Enrollment() {
     }
