@@ -10,7 +10,7 @@ import java.util.List;
 public class Course {
 
     @Id
-    @Column(name="code")
+    @Column(name="code",updatable = false)
     private String code;
 
     @Column(name = "name")

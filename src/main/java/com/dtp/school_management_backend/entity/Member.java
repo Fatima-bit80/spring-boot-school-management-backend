@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Member {
 
     @Id
-    @Column(name = "email")
+    @Column(name = "email",updatable = false)
     private String email;
 
     @Column(name = "password")
