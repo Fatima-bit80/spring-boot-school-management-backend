@@ -10,26 +10,26 @@ import java.util.List;
 public class Student {
 
     @Id
-    @Column(name = "id",updatable = false)
+    @Column(name = "id",updatable = false,nullable = false)
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int studentId;
 
-    @Column(name = "first_name")
+    @Column(name = "first_name",nullable = false)
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name = "last_name",nullable = false)
     private String lastName;
 
 
 
-    @Column(name = "year")
+    @Column(name = "year",nullable = false)
     private int year;
 
 
 
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "email")
+    @JoinColumn(name = "email",nullable = false)
     private Member member;
 
     @OneToMany(mappedBy = "student",

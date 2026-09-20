@@ -10,13 +10,13 @@ import java.util.List;
 public class Course {
 
     @Id
-    @Column(name="code",updatable = false)
+    @Column(name="code",updatable = false,nullable = false)
     private String code;
 
-    @Column(name = "name")
+    @Column(name = "name",nullable = false)
     private String name;
 
-    @Column(name="year")
+    @Column(name="year",nullable = false)
     private int year;
 
     @ManyToOne(cascade = {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH,})

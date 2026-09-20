@@ -9,21 +9,21 @@ public class Enrollment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id",updatable = false)
+    @Column(name = "id",updatable = false,nullable = false)
     private int id;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "code")
+    @JoinColumn(name = "code",nullable = false)
     private Course course;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "student_id")
+    @JoinColumn(name = "student_id",nullable = false)
     private Student student;
 
     @Column(name = "grade")
     private int grade;
 
-    @Column(name = "approved")
+    @Column(name = "approved",nullable = false)
     private int approved;
 
     public Enrollment() {

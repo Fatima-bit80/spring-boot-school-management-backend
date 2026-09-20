@@ -7,16 +7,16 @@ import jakarta.persistence.*;
 public class Member {
 
     @Id
-    @Column(name = "email",updatable = false)
+    @Column(name = "email",updatable = false,nullable = false)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password",nullable = false)
     private String password;
 
-    @Column(name = "role")
+    @Column(name = "role", nullable = false)
     private String role;
 
-    @Column(name="active")
+    @Column(name="active",nullable = false)
     private int active;
 
 
