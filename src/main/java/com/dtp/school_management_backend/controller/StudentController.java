@@ -2,67 +2,69 @@ package com.dtp.school_management_backend.controller;
 
 
 import com.dtp.school_management_backend.dto.*;
-import com.dtp.school_management_backend.entity.Member;
-import com.dtp.school_management_backend.service.SchoolService;
+import com.dtp.school_management_backend.entity.Student;
+import com.dtp.school_management_backend.mapper.SchoolMapper;
+import com.dtp.school_management_backend.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/students")
+@RequestMapping("/api/v1/students")
 public class StudentController {
 
-    private SchoolService schoolService;
+    private UsersService usersService;
+    private SchoolMapper schoolMapper;
 
     @Autowired
-    public StudentController(SchoolService schoolService) {
-        this.schoolService = schoolService;
+    public StudentController(UsersService usersService, SchoolMapper schoolMapper) {
+        this.usersService = usersService;
+        this.schoolMapper = schoolMapper;
     }
 
-    @GetMapping
-    public StudentDTO getStudent(Authentication authentication) {
+    @GetMapping("/studentId")
+    public StudentDTO getStudentById(@RequestParam int studentId,Authentication authentication) {
+
         String email = authentication.getName();
-        Member member = schoolService.findMemberByEmail(email);
-        int studentId = member.getStudent().getStudentId();
-        return schoolService.findStudentById(studentId);
+
+        Student student = usersService.findStudentByIdForRequester(studentId,email);
+
+        return schoolMapper.studentToStudentDto(student);
+
+    }
+
+
+    @GetMapping
+    public List<StudentDTO> getAllStudents() {
+
+        List<StudentDTO> allStudentDTOs = new ArrayList<>();
+
+        List<Student> allStudents = usersService.findAllStudents();
+        for (Student s:allStudents){
+            allStudentDTOs.add(schoolMapper.studentToStudentDto(s));
+        }
+        return allStudentDTOs;
     }
 
 
     @PostMapping
     public StudentDTO createStudentAccount(@RequestBody StudentDTO studentDTO) {
 
-      return schoolService.saveStudent(studentDTO);
 
-    }
 
-    @GetMapping("/enrollments")
-    public List<EnrollmentDTO> getEnrollments(Authentication authentication) {
-        String email = authentication.getName();
-        Member member = schoolService.findMemberByEmail(email);
-        int studentId = member.getStudent().getStudentId();
-        return schoolService.findEnrollmentsOfStudent(studentId);
+      Student savedStudent = usersService.saveStudent(studentDTO);
 
-    }
-
-    @DeleteMapping("/enrollments/{courseId}")
-    public void getEnrollments(@PathVariable int courseId, Authentication authentication) {
-        String email = authentication.getName();
-        Member member = schoolService.findMemberByEmail(email);
-        int studentId = member.getStudent().getStudentId();
-
-        schoolService.deleteEnrollmentOfStudent(studentId, courseId);
-
+      return schoolMapper.studentToStudentDto(savedStudent);
     }
 
 
-    @PostMapping("enrollments/{courseCode}")
-    public EnrollmentDTO requestEnrollment(@PathVariable String courseCode, Authentication authentication) {
-
-        String email = authentication.getName();
-        Member member = schoolService.findMemberByEmail(email);
-        int studentId = member.getStudent().getStudentId();
-        return schoolService.saveEnrollment(courseCode, studentId);
+    @DeleteMapping("/{studentId}")
+    public void deleteStudentAccount(@PathVariable int studentId) {
+        usersService.deleteStudentById(studentId);
     }
+
+
 }
