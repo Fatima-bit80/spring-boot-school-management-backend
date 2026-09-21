@@ -26,8 +26,8 @@ public class TeacherController {
         this.schoolMapper = schoolMapper;
     }
 
-    @GetMapping("/teacherId")
-    public TeacherDTO getTeacher(@RequestParam int teacherId,Authentication authentication) {
+    @GetMapping("/{teacherId}")
+    public TeacherDTO getTeacher(@RequestParam int teacherId,Authentication authentication) throws IllegalAccessException {
         String email = authentication.getName();
 
         Teacher teacher = usersService.findTeacherById(teacherId,email);
@@ -58,7 +58,7 @@ public class TeacherController {
 
 
 
-    @DeleteMapping("/teacherId}")
+    @DeleteMapping("/{teacherId}")
     public void deleteTeacherAccount(@RequestParam int teacherId) {
         usersService.deleteTeacherById(teacherId);
     }

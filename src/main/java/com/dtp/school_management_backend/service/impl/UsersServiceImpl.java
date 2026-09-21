@@ -80,12 +80,11 @@ public class UsersServiceImpl implements UsersService {
 
 
     @Override
-    public Teacher findTeacherById(int teacherId, String email) {
+    public Teacher findTeacherById(int teacherId, String email) throws IllegalAccessException {
         Member m =  memberRepository.findById(email).get();
         if(m.getTeacher().getTeacherId() != teacherId){
-            //todo throw exception
+            throw new IllegalAccessException("teacher can't access another teacher's info");
         }
-
         return teacherRepository.findById(teacherId).get();
     }
 
@@ -107,12 +106,12 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public Student findStudentByIdForRequester(int id, String email) {
+    public Student findStudentByIdForRequester(int id, String email) throws IllegalAccessException {
 
         Member member =  memberRepository.findById(email).get();
 
         if(member.getStudent() != null && (member.getStudent().getStudentId() != id)){
-            //todo throw exception
+            throw new IllegalAccessException("student can't access another teacher's info");
         }
 
         Student s = studentRepository.findById(id).get();

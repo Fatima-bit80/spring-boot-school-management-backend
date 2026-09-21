@@ -19,6 +19,10 @@ public class SchoolMapperImpl implements  SchoolMapper {
     private EnrollmentRepository enrollmentRepository;
 
     //todo check if this is the best way to map
+    //todo boolean to hide/show fields
+
+    //entity to dto -> response
+    // dto to entity -> request
 
     @Autowired
     public SchoolMapperImpl(StudentRepository studentRepository, TeacherRepository teacherRepository, CourseRepository courseRepository, EnrollmentRepository enrollmentRepository) {
@@ -30,23 +34,16 @@ public class SchoolMapperImpl implements  SchoolMapper {
 
     @Override
     public StudentDTO studentToStudentDto(Student student) {
-       return new StudentDTO(student.getMember().getEmail(), student.getMember().getPassword(),student.getMember().getRole(),student.getMember().getActive(),student.getStudentId(),student.getFirstName(),student.getLastName(),student.getYear());
+       return new StudentDTO(student.getMember().getEmail(), null,student.getMember().getRole(),student.getMember().getActive(),student.getStudentId(),student.getFirstName(),student.getLastName(),student.getYear());
     }
 
-    @Override
-    public Student studentDtoToStudent(StudentDTO studentDTO) {
-        return new Student(studentDTO.getStudentId(),studentDTO.getFirstName(),studentDTO.getLastName(),studentDTO.getYear());
-    }
 
     @Override
     public TeacherDTO teacherToTeacherDto(Teacher teacher) {
-        return new TeacherDTO(teacher.getMember().getEmail(), teacher.getMember().getPassword(),teacher.getMember().getRole(),teacher.getMember().getActive(),teacher.getTeacherId(),teacher.getFirstName(),teacher.getLastName());
+        return new TeacherDTO(teacher.getMember().getEmail(), null,teacher.getMember().getRole(),teacher.getMember().getActive(),teacher.getTeacherId(),teacher.getFirstName(),teacher.getLastName());
     }
 
-    @Override
-    public Teacher teacherDtoToTeacher(TeacherDTO teacherDTO) {
-        return new Teacher(teacherDTO.getTeacherId(),teacherDTO.getFirstName(),teacherDTO.getLastName());
-    }
+
 
     @Override
     public EnrollmentDTO enrollmentToEnrollmentDto(Enrollment enrollment) {
@@ -55,18 +52,21 @@ public class SchoolMapperImpl implements  SchoolMapper {
 
     @Override
     public Enrollment enrollmentDtoToEnrollment(EnrollmentDTO enrollmentDTO) {
-        return new Enrollment(enrollmentDTO.getId(),courseRepository.findById(enrollmentDTO.getCourseCode()).get(), studentRepository.findById(enrollmentDTO.getStudentId()).get(),enrollmentDTO.getGrade(),enrollmentDTO.getApproved());
+        return new Enrollment(enrollmentDTO.getId(),courseRepository.findById(enrollmentDTO.getCourseCode()).get(), studentRepository.findById(enrollmentDTO.getStudentId()).get(), enrollmentDTO.getGrade() == null ?-1:  enrollmentDTO.getGrade(),enrollmentDTO.getApproved()==null?-1: enrollmentDTO.getApproved());
     }
 
     @Override
-    public CourseDTO courseToCourseDto(Course course) {
+    public CourseDTO courseToCourseDto(Course course,boolean isAdmin) {
+List<Integer> enrollments = null;
 
-        List<Integer> enrollments = new ArrayList<>();
 
-        for (Enrollment e : course.getEnrollments()){
-            enrollments.add(e.getId());
-        }
+if(isAdmin) {
+    enrollments = new ArrayList<>();
 
+    for (Enrollment e : course.getEnrollments()) {
+        enrollments.add(e.getId());
+    }
+}
         return new CourseDTO(course.getCode(),course.getName(),course.getYear(),course.getTeacher().getTeacherId(),enrollments);
     }
 
@@ -81,7 +81,7 @@ public class SchoolMapperImpl implements  SchoolMapper {
 
     @Override
     public MemberDTO memberToMemberDTO(Member member) {
-        return new MemberDTO(member.getEmail(),member.getPassword(),member.getRole(),member.getActive());
+        return new MemberDTO(member.getEmail(),null,member.getRole(),member.getActive());
     }
 
     @Override

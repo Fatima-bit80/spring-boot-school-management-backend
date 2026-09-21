@@ -52,17 +52,21 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     @Transactional
-    public void deleteEnrollment(int enrollmentId, String email) {
+    public void deleteEnrollment(int enrollmentId, String email) throws IllegalAccessException {
 
         Member member = memberRepository.findById(email).get();
 
         Enrollment e = enrollmentRepository.findById(enrollmentId).get();
 
-        if((member.getStudent() != null && member.getStudent().getStudentId() != enrollmentId)
-                ||(member.getTeacher()!=null && e.getCourse().getTeacher().getTeacherId() != enrollmentId)){
-            //todo throw exception enrollmetn does belong to stuednt/ request isn't for teacher
+
+
+        if((member.getStudent() != null && member.getStudent().getStudentId() != e.getStudent().getStudentId())){
+            throw new IllegalAccessException("Student can't delete another student's enrollment");
         }
 
+        if( (member.getTeacher()!=null) && (e.getCourse().getTeacher().getTeacherId()) != e.getCourse().getTeacher().getTeacherId()){
+            throw new IllegalAccessException("teacher can't delete an enrollment of another teacher's course");
+        }
         enrollmentRepository.deleteById(enrollmentId);
     }
 
@@ -70,6 +74,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Override
     @Transactional
     public Enrollment saveEnrollment(String courseCode, String email) {
+
+
 
         Member member = memberRepository.findById(email).get();
         Student student = member.getStudent();
@@ -86,16 +92,19 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Override
     @Transactional
     // update approved or grades
-    public Enrollment updateEnrollment(int enrollmentId,Enrollment enrollment,String email){
+    public Enrollment updateEnrollment(int enrollmentId,Enrollment enrollment,String email) throws IllegalAccessException {
         Enrollment e = enrollmentRepository.findById(enrollmentId).get();
 
         Member member = memberRepository.findById(email).get();
 
         if((member.getTeacher()!= null) && (member.getTeacher().getTeacherId() != e.getCourse().getTeacher().getTeacherId())) {
-            //todo throw an exception that this enrollment doesn't belong to the teacher
+            throw new IllegalAccessException("teacher can't update an enrollment of another teacher's course");
         }
 
+        if(enrollment.getApproved() !=-1)
         e.setApproved(enrollment.getApproved());
+
+        if (enrollment.getGrade()!=-1)
         e.setGrade(enrollment.getGrade());
 
 
@@ -105,7 +114,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
 
     @Override
-    public List<Enrollment> findEnrollmentsOfCourse(String code,String email) {
+    public List<Enrollment> findEnrollmentsOfCourse(String code,String email) throws IllegalAccessException {
         Member member = memberRepository.findById(email).get();
 
 
@@ -114,7 +123,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             int teacherId = teacher.getTeacherId();
             Course c =  courseRepository.findById(code).get();
             if(c.getTeacher().getTeacherId() != teacherId){
-                //todo throw exception that this teacher cant access the enrollments of this course
+                throw new IllegalAccessException("teacher can't access an enrollment of another teacher's course");
             }
         }
 

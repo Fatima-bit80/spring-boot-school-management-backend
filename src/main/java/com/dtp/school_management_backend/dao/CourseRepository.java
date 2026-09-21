@@ -10,21 +10,15 @@ import java.util.List;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, String> {
 
-    @Query( "SELECT c1 " +
-            " FROM Course c1" +
-            " WHERE c1.code NOT IN(" +
+
+    //courses that the student isn't enrolled in
+    @Query("SELECT c " +
+            " FROM Course c" +
+            " WHERE c.code NOT IN(" +
             " SELECT e.course.code " +
             " FROM Enrollment e " +
             "  WHERE e.student.studentId = ?1)")
     List<Course> findAvailableCoursesForStudent(int studentId);
-
-
-
-    @Query( "SELECT t.courses " +
-            "FROM Teacher t " +
-            "WHERE t.teacherId = ?1")
-     List<Course> findCoursesOfTeacher(int teacherId);
-
 
     @Query("SELECT c " +
             "FROM Course c " +
@@ -33,6 +27,12 @@ public interface CourseRepository extends JpaRepository<Course, String> {
             "FROM Enrollment e " +
             "WHERE e.student.studentId = ?1)")
     List<Course> findCoursesOfStudent(int studentId);
+
+
+    @Query("SELECT t.courses " +
+            "FROM Teacher t " +
+            "WHERE t.teacherId = ?1")
+    List<Course> findCoursesOfTeacher(int teacherId);
 
 
 

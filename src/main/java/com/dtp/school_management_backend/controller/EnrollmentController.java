@@ -25,7 +25,7 @@ public class EnrollmentController {
         this.schoolMapper = schoolMapper;
     }
 
-    @GetMapping("/")
+    @GetMapping
     public List<EnrollmentDTO> getEnrollmentsOfUser(Authentication authentication) {
         List<EnrollmentDTO> enrollmentDTOList = new ArrayList<>();
 
@@ -41,8 +41,8 @@ public class EnrollmentController {
 
     }
 
-    @GetMapping("/courseCode")
-    public List<EnrollmentDTO> getEnrollmentsOfCourse(@RequestParam String courseCode,Authentication authentication) {
+    @GetMapping("/{courseCode}")
+    public List<EnrollmentDTO> getEnrollmentsOfCourse(@PathVariable String courseCode,Authentication authentication) throws IllegalAccessException {
         String email = authentication.getName();
 
         List<Enrollment> enrollments = enrollmentService.findEnrollmentsOfCourse(courseCode,email);
@@ -55,7 +55,7 @@ public class EnrollmentController {
     }
 
     @DeleteMapping("/{courseCode}")
-    public void deleteEnrollment(@PathVariable int courseCode, Authentication authentication) {
+    public void deleteEnrollment(@PathVariable int courseCode, Authentication authentication) throws IllegalAccessException {
         String email = authentication.getName();
 
         enrollmentService.deleteEnrollment(courseCode,email);
@@ -92,7 +92,7 @@ public class EnrollmentController {
 
     //accept request or change grade
     @PutMapping("/{enrollmentId}")
-    public EnrollmentDTO updateEnrollment(@RequestParam int enrollmentId,@RequestBody EnrollmentDTO enrollmentDTO,Authentication authentication) {
+    public EnrollmentDTO updateEnrollment(@PathVariable int enrollmentId,@RequestBody EnrollmentDTO enrollmentDTO,Authentication authentication) throws IllegalAccessException {
 
         String email = authentication.getName();
 

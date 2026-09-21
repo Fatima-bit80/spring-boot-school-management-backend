@@ -8,15 +8,13 @@ import org.springframework.stereotype.Component;
 public interface SchoolMapper {
 
     StudentDTO studentToStudentDto(Student student);
-    Student studentDtoToStudent(StudentDTO studentDTO);
 
     TeacherDTO teacherToTeacherDto(Teacher teacher);
-    Teacher teacherDtoToTeacher(TeacherDTO teacherDTO);
 
     EnrollmentDTO enrollmentToEnrollmentDto(Enrollment enrollment);
     Enrollment enrollmentDtoToEnrollment(EnrollmentDTO enrollmentDTO);
 
-    CourseDTO courseToCourseDto(Course course);
+    CourseDTO courseToCourseDto(Course course,boolean isAdmin);
     Course courseDtoToCourse(CourseDTO courseDTO);
 
     MemberDTO memberToMemberDTO(Member member);

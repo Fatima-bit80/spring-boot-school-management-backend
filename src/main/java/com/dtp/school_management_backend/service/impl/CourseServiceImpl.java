@@ -14,31 +14,39 @@ import java.util.List;
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
-    private final TeacherRepository teacherRepository;
     private final MemberRepository memberRepository;
 
 
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository, TeacherRepository teacherRepository, MemberRepository memberRepository) {
+    public CourseServiceImpl(CourseRepository courseRepository, MemberRepository memberRepository) {
         this.courseRepository = courseRepository;
-        this.teacherRepository = teacherRepository;
         this.memberRepository = memberRepository;
+    }
+
+    @Override
+    public List<Course> findAllCourses(String email) {
+        Member m =  memberRepository.findById(email).get();
+
+        List<Course> courses = courseRepository.findAll();
+
+
+        return courses;
     }
 
     @Override
     public List<Course> findAvailableCourses(String email) {
         Member member = memberRepository.findById(email).get();
         int studentId = member.getStudent().getStudentId();
-        return courseRepository.findAvailableCoursesForStudent(studentId);
-    }
+        List<Course> courses = courseRepository.findAvailableCoursesForStudent(studentId);
 
+
+        return courses;
+    }
 
 
     @Override
     public List<Course> findCoursesOfStudent(String email) {
         Member member = memberRepository.findById(email).get();
-
-
             int studentId = member.getStudent().getStudentId();
             return courseRepository.findCoursesOfStudent(studentId);
 
@@ -47,7 +55,6 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> findCoursesOfTeacher(String email) {
         Member member = memberRepository.findById(email).get();
-
             int teacherId = member.getTeacher().getTeacherId();
             return courseRepository.findCoursesOfTeacher(teacherId);
     }
@@ -56,14 +63,10 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public Course saveCourse(Course course) {
-        courseRepository.save(course);
-        return course;
+       return courseRepository.save(course);
     }
 
-    @Override
-    public List<Course> findAllCourses() {
-        return courseRepository.findAll();
-    }
+
 
 
 }

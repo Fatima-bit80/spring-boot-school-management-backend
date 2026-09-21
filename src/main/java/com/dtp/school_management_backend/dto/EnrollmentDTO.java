@@ -15,14 +15,14 @@ public class EnrollmentDTO {
 
     private int studentId;
 
-    private int grade;
+    private Integer grade;
 
-    private int approved;
+    private Integer approved;
 
     public EnrollmentDTO() {
     }
 
-    public EnrollmentDTO(int id, String courseCode, int studentId, int grade, int approved) {
+    public EnrollmentDTO(int id, String courseCode, int studentId, Integer grade, Integer approved) {
         this.id = id;
         this.courseCode = courseCode;
         this.studentId = studentId;
@@ -38,19 +38,19 @@ public class EnrollmentDTO {
         this.id = id;
     }
 
-    public int getGrade() {
+    public Integer getGrade() {
         return grade;
     }
 
-    public void setGrade(int grade) {
+    public void setGrade(Integer grade) {
         this.grade = grade;
     }
 
-    public int getApproved() {
+    public Integer getApproved() {
         return approved;
     }
 
-    public void setApproved(int approved) {
+    public void setApproved(Integer approved) {
         this.approved = approved;
     }
 

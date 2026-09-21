@@ -25,8 +25,8 @@ public class StudentController {
         this.schoolMapper = schoolMapper;
     }
 
-    @GetMapping("/studentId")
-    public StudentDTO getStudentById(@RequestParam int studentId,Authentication authentication) {
+    @GetMapping("/{studentId}")
+    public StudentDTO getStudentById(@PathVariable int studentId,Authentication authentication) throws IllegalAccessException {
 
         String email = authentication.getName();
 
@@ -52,8 +52,6 @@ public class StudentController {
 
     @PostMapping
     public StudentDTO createStudentAccount(@RequestBody StudentDTO studentDTO) {
-
-
 
       Student savedStudent = usersService.saveStudent(studentDTO);
 

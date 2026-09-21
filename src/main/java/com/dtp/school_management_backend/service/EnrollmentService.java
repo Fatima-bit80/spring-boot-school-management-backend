@@ -10,9 +10,9 @@ import java.util.List;
 public interface EnrollmentService {
 
     List<Enrollment> findEnrollments(String email);
-    List<Enrollment> findEnrollmentsOfCourse(String code,String email);
+    List<Enrollment> findEnrollmentsOfCourse(String code,String email) throws IllegalAccessException;
     Enrollment saveEnrollment(String courseCode, String email);
-    void deleteEnrollment(int enrollmentId, String email);
-    Enrollment updateEnrollment(int enrollmentId,Enrollment enrollment,String email);
+    void deleteEnrollment(int enrollmentId, String email) throws IllegalAccessException;
+    Enrollment updateEnrollment(int enrollmentId,Enrollment enrollment,String email) throws IllegalAccessException;
 
 }
