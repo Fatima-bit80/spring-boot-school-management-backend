@@ -6,25 +6,28 @@ import jakarta.persistence.*;
 
 public class EnrollmentDTO {
 
+
     private int id;
 
 
+    private String courseCode;
+
+
+    private int studentId;
 
     private int grade;
 
     private int approved;
 
-
-
-    private String courseCode;
-    private String courseName;
-    private int courseYear;
-
-    private String teacherName;
-
-    private String studentName;
-
     public EnrollmentDTO() {
+    }
+
+    public EnrollmentDTO(int id, String courseCode, int studentId, int grade, int approved) {
+        this.id = id;
+        this.courseCode = courseCode;
+        this.studentId = studentId;
+        this.grade = grade;
+        this.approved = approved;
     }
 
     public int getId() {
@@ -51,8 +54,6 @@ public class EnrollmentDTO {
         this.approved = approved;
     }
 
-
-
     public String getCourseCode() {
         return courseCode;
     }
@@ -61,36 +62,12 @@ public class EnrollmentDTO {
         this.courseCode = courseCode;
     }
 
-    public String getCourseName() {
-        return courseName;
+    public int getStudentId() {
+        return studentId;
     }
 
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
-    }
-
-    public int getCourseYear() {
-        return courseYear;
-    }
-
-    public void setCourseYear(int courseYear) {
-        this.courseYear = courseYear;
-    }
-
-    public String getTeacherName() {
-        return teacherName;
-    }
-
-    public void setTeacherName(String teacherName) {
-        this.teacherName = teacherName;
-    }
-
-    public String getStudentName() {
-        return studentName;
-    }
-
-    public void setStudentName(String studentName) {
-        this.studentName = studentName;
+    public void setStudentId(int studentId) {
+        this.studentId = studentId;
     }
 }
 

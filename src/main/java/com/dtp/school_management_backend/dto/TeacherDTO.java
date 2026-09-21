@@ -1,15 +1,39 @@
 package com.dtp.school_management_backend.dto;
 
-public class TeacherDTO {
+import com.dtp.school_management_backend.entity.Course;
+import com.dtp.school_management_backend.entity.Member;
+import jakarta.persistence.*;
+
+import java.util.List;
+
+public class TeacherDTO extends  MemberDTO{
 
 
     private int teacherId;
+
     private String firstName;
+
     private String lastName;
-    private String email;
-    private String password;
+
+
+
+
 
     public TeacherDTO() {
+    }
+
+    public TeacherDTO(int teacherId, String firstName, String lastName) {
+        this.teacherId = teacherId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+
+    }
+
+    public TeacherDTO(String email, String password, String role, int active, int teacherId, String firstName, String lastName) {
+        super(email, password, role, active);
+        this.teacherId = teacherId;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public int getTeacherId() {
@@ -36,19 +60,5 @@ public class TeacherDTO {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
-    }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }
