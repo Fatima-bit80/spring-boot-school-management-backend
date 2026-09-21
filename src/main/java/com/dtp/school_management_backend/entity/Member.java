@@ -50,14 +50,22 @@ public class Member {
         this.email = email;
     }
 
-    public Member(String password, String role, int active, String email) {
+    public Member(String email, String password, String role, int active) {
+        this.email = email;
         this.password = password;
         this.role = role;
         this.active = active;
-        this.email = email;
     }
 
-
+    public Member(String email, String password, String role, int active, Admin admin, Teacher teacher, Student student) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.active = active;
+        this.admin = admin;
+        this.teacher = teacher;
+        this.student = student;
+    }
 
     public String getPassword() {
         return password;

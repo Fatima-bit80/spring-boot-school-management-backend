@@ -33,11 +33,18 @@ public class Teacher {
     public Teacher() {
     }
 
-    public Teacher(String firstName, String lastName,  Member member, List<Course> courses) {
+    public Teacher(int teacherId, String firstName, String lastName, Member member, List<Course> courses) {
+        this.teacherId = teacherId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.member = member;
         this.courses = courses;
+    }
+
+    public Teacher(int teacherId, String firstName, String lastName) {
+        this.teacherId = teacherId;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public String getFirstName() {

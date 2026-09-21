@@ -39,7 +39,9 @@ public class Student {
     public Student() {
     }
 
-    public Student(String firstName, String lastName,  int year, Member member, List<Enrollment> enrollments) {
+
+    public Student(int studentId, String firstName, String lastName, int year, Member member, List<Enrollment> enrollments) {
+        this.studentId = studentId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.year = year;
@@ -47,6 +49,12 @@ public class Student {
         this.enrollments = enrollments;
     }
 
+    public Student(int studentId, String firstName, String lastName, int year) {
+        this.studentId = studentId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.year = year;
+    }
 
     public int getStudentId() {
         return studentId;
