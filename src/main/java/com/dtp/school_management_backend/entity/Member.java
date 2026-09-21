@@ -57,6 +57,13 @@ public class Member {
         this.active = active;
     }
 
+    public Member(String email, String role, int active) {
+        this.email = email;
+        this.role = role;
+        this.active = active;
+    }
+
+
     public Member(String email, String password, String role, int active, Admin admin, Teacher teacher, Student student) {
         this.email = email;
         this.password = password;
