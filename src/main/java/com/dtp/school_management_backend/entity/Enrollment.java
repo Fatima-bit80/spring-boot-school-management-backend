@@ -48,6 +48,14 @@ public class Enrollment {
         this.approved = approved;
     }
 
+    public Enrollment(int id, Course course, Student student, int grade, int approved) {
+        this.id = id;
+        this.course = course;
+        this.student = student;
+        this.grade = grade;
+        this.approved = approved;
+    }
+
     public int getApproved() {
         return approved;
     }
