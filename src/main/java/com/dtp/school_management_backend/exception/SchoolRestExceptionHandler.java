@@ -13,8 +13,7 @@ public class SchoolRestExceptionHandler {
     public ResponseEntity<SchoolErrorResponse> handleException(SchoolException exc) {
         SchoolErrorResponse error = new SchoolErrorResponse();
         error.setStatus(HttpStatus.FORBIDDEN.value());
-        //todo remove "EXCEPTION"
-        error.setMessage("EXCEPTION: "+exc.getMessage());
+        error.setMessage(exc.getMessage());
         error.setTimeStamp(System.currentTimeMillis());
 
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
