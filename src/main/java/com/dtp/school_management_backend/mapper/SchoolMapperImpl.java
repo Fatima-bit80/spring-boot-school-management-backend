@@ -46,10 +46,6 @@ public class SchoolMapperImpl implements SchoolMapper {
         return new EnrollmentDTO(enrollment.getId(), enrollment.getCourse().getCode(), enrollment.getStudent().getStudentId(), enrollment.getGrade(), enrollment.getApproved());
     }
 
-//    @Override
-//    public Enrollment enrollmentDtoToEnrollment(EnrollmentDTO enrollmentDTO) {
-//        return new Enrollment(enrollmentDTO.getId(), courseRepository.findById(enrollmentDTO.getCourseCode()).get(), studentRepository.findById(enrollmentDTO.getStudentId()).get(), enrollmentDTO.getGrade() == null ? -1 : enrollmentDTO.getGrade(), enrollmentDTO.getApproved() == null ? -1 : enrollmentDTO.getApproved());
-//    }
 
     @Override
     public CourseDTO courseToCourseDto(Course course, boolean showEnrollments) {
@@ -78,14 +74,5 @@ public class SchoolMapperImpl implements SchoolMapper {
         return new Course(courseDTO.getCode(), courseDTO.getName(), courseDTO.getYear(), teacherRepository.findById(courseDTO.getTeacherId()).get(), enrollments);
     }
 
-    @Override
-    public MemberDTO memberToMemberDTO(Member member) {
-        return new MemberDTO(member.getEmail(), null, member.getRole(), member.getActive());
-    }
 
-    @Override
-    public Member memberDtoToMember(MemberDTO memberDTO) {
-        return new Member(memberDTO.getEmail(), memberDTO.getPassword(), memberDTO.getRole(), memberDTO.getActive());
-
-    }
 }
