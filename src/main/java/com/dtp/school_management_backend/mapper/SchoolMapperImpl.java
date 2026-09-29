@@ -18,9 +18,6 @@ public class SchoolMapperImpl implements SchoolMapper {
     private CourseRepository courseRepository;
     private EnrollmentRepository enrollmentRepository;
 
-    //todo check if this is the best way to map
-    //todo boolean to hide/show fields
-
     //entity to dto -> response
     // dto to entity -> request
 
