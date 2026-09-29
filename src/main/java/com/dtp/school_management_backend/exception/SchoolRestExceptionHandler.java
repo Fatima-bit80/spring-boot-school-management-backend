@@ -10,12 +10,22 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class SchoolRestExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<SchoolErrorResponse> handleException(SchoolException exc) {
+    public ResponseEntity<SchoolErrorResponse> handleException(ForbiddenException exc) {
         SchoolErrorResponse error = new SchoolErrorResponse();
         error.setStatus(HttpStatus.FORBIDDEN.value());
         error.setMessage(exc.getMessage());
         error.setTimeStamp(System.currentTimeMillis());
 
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<SchoolErrorResponse> handleException(NotFoundException exc) {
+        SchoolErrorResponse error = new SchoolErrorResponse();
+        error.setStatus(HttpStatus.NOT_FOUND.value());
+        error.setMessage(exc.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 }

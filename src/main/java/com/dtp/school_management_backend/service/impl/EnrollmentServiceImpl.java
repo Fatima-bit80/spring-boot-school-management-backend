@@ -5,7 +5,8 @@ import com.dtp.school_management_backend.dao.EnrollmentRepository;
 import com.dtp.school_management_backend.dao.MemberRepository;
 import com.dtp.school_management_backend.dto.EnrollmentDTO;
 import com.dtp.school_management_backend.entity.*;
-import com.dtp.school_management_backend.exception.SchoolException;
+import com.dtp.school_management_backend.exception.ForbiddenException;
+import com.dtp.school_management_backend.exception.NotFoundException;
 import com.dtp.school_management_backend.service.EnrollmentService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +65,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         Optional<Enrollment> enrollment = enrollmentRepository.findById(enrollmentId);
 
         if(!enrollment.isPresent()){
-            throw new SchoolException("enrollment doesn't exist");
+            throw new NotFoundException("enrollment doesn't exist");
         }
 
         Enrollment e = enrollment.get();
@@ -72,11 +73,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
 
         if((member.getStudent() != null && member.getStudent().getStudentId() != e.getStudent().getStudentId())){
-            throw new SchoolException("Student can't delete another student's enrollment");
+            throw new ForbiddenException("Student can't delete another student's enrollment");
         }
 
         if( (member.getTeacher()!=null) && (e.getCourse().getTeacher().getTeacherId()) != member.getTeacher().getTeacherId()){
-            throw new SchoolException("teacher can't delete an enrollment of another teacher's course");
+            throw new ForbiddenException("teacher can't delete an enrollment of another teacher's course");
         }
         enrollmentRepository.deleteById(enrollmentId);
     }
@@ -90,7 +91,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         Student student = member.getStudent();
         Optional<Course> course1 = courseRepository.findById(courseCode);
         if(!course1.isPresent()){
-            throw new SchoolException("course not found");
+            throw new NotFoundException("course not found");
         }
         Course course = course1.get();
         Enrollment e = new Enrollment(course,student);
@@ -107,14 +108,14 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public Enrollment updateEnrollment(int enrollmentId, EnrollmentDTO enrollment, String email)  {
         Optional<Enrollment> enrollment1 = enrollmentRepository.findById(enrollmentId);
         if(!enrollment1.isPresent()){
-            throw new SchoolException("enrollment not found");
+            throw new NotFoundException("enrollment not found");
         }
         Enrollment e = enrollment1.get();
 
         Member member = memberRepository.findById(email).get();
 
         if((member.getTeacher()!= null) && (member.getTeacher().getTeacherId() != e.getCourse().getTeacher().getTeacherId())) {
-            throw new SchoolException("teacher can't update an enrollment of another teacher's course");
+            throw new ForbiddenException("teacher can't update an enrollment of another teacher's course");
         }
 
         if(enrollment.getApproved() != null)
@@ -136,7 +137,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         Optional<Course> course = courseRepository.findById(code);
         if(!course.isPresent())
-            throw new SchoolException("course with code "+code+" not found");
+            throw new NotFoundException("course with code "+code+" not found");
 
         if(member.getTeacher() != null ){
             Teacher teacher = member.getTeacher();
@@ -144,7 +145,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
             Course c = course.get();
             if(c.getTeacher().getTeacherId() != teacherId){
-                throw new SchoolException("teacher can't access an enrollment of another teacher's course");
+                throw new ForbiddenException("teacher can't access an enrollment of another teacher's course");
             }
         }
 

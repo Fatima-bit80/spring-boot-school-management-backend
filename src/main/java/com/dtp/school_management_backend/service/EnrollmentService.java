@@ -11,7 +11,7 @@ import java.util.List;
 public interface EnrollmentService {
 
     List<Enrollment> findEnrollments(String email);
-    List<Enrollment> findEnrollmentsOfCourse(String code,String email) throws IllegalAccessException;
+    List<Enrollment> findEnrollmentsOfCourse(String code,String email) ;
     Enrollment saveEnrollment(String courseCode, String email);
     void deleteEnrollment(int enrollmentId, String email) ;
     Enrollment updateEnrollment(int enrollmentId, EnrollmentDTO enrollment, String email) ;

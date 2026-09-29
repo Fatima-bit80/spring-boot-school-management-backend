@@ -3,7 +3,8 @@ package com.dtp.school_management_backend.service.impl;
 
 import com.dtp.school_management_backend.dao.*;
 import com.dtp.school_management_backend.entity.*;
-import com.dtp.school_management_backend.exception.SchoolException;
+import com.dtp.school_management_backend.exception.ForbiddenException;
+import com.dtp.school_management_backend.exception.NotFoundException;
 import com.dtp.school_management_backend.service.CourseService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,7 @@ public class CourseServiceImpl implements CourseService {
         if(s.isPresent()) {
             courseRepository.deleteById(code);
         }else {
-            throw new SchoolException("COURSE_NOT_FOUND");
+            throw new NotFoundException("COURSE_NOT_FOUND");
         }
 
     }
@@ -76,7 +77,7 @@ public class CourseServiceImpl implements CourseService {
         Optional<Course> c = courseRepository.findById(course.getCode());
 
         if(c.isPresent()) {
-            throw new SchoolException("COURSE_ALREADY_EXISTS");
+            throw new ForbiddenException("COURSE_ALREADY_EXISTS");
         }
 
        return courseRepository.save(course);

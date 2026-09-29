@@ -9,7 +9,8 @@ import com.dtp.school_management_backend.dto.TeacherDTO;
 import com.dtp.school_management_backend.entity.Member;
 import com.dtp.school_management_backend.entity.Student;
 import com.dtp.school_management_backend.entity.Teacher;
-import com.dtp.school_management_backend.exception.SchoolException;
+import com.dtp.school_management_backend.exception.ForbiddenException;
+import com.dtp.school_management_backend.exception.NotFoundException;
 import com.dtp.school_management_backend.service.UsersService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +86,7 @@ public class UsersServiceImpl implements UsersService {
     public Teacher findTeacherById(int teacherId, String email) {
         Member m =  memberRepository.findById(email).get();
         if(m.getTeacher()!=null &&  m.getTeacher().getTeacherId() != teacherId){
-            throw new SchoolException("teacher can't access another teacher's info");
+            throw new ForbiddenException("teacher can't access another teacher's info");
         }
 
 
@@ -94,7 +95,7 @@ public class UsersServiceImpl implements UsersService {
         if (teacher.isPresent()) {
             return teacher.get();
         }else {
-            throw new SchoolException("no teacher with id "+teacherId+" found");
+            throw new NotFoundException("no teacher with id "+teacherId+" found");
         }
     }
 
@@ -102,7 +103,7 @@ public class UsersServiceImpl implements UsersService {
     public void deleteStudentById(int studentId) {
         Optional<Student> student1 = studentRepository.findById(studentId);
         if(!student1.isPresent())
-            throw new SchoolException("student with id "+studentId+" not found");
+            throw new NotFoundException("student with id "+studentId+" not found");
         Student student = student1.get();
         studentRepository.delete(student);
     }
@@ -111,7 +112,7 @@ public class UsersServiceImpl implements UsersService {
     public void deleteTeacherById(int teacherId) {
         Optional<Teacher> teacher1 = teacherRepository.findById(teacherId);
         if(!teacher1.isPresent())
-            throw new SchoolException("teacher with id "+teacherId+" not found");
+            throw new NotFoundException("teacher with id "+teacherId+" not found");
         Teacher teacher = teacher1.get();
         teacherRepository.delete(teacher);
     }
@@ -127,7 +128,7 @@ public class UsersServiceImpl implements UsersService {
         Member member =  memberRepository.findById(email).get();
 
         if(member.getStudent() != null && (member.getStudent().getStudentId() != id)){
-            throw new SchoolException("student can't access another student's info");
+            throw new ForbiddenException("student can't access another student's info");
         }
 
         Optional<Student> student = studentRepository.findById(id);
@@ -135,7 +136,7 @@ public class UsersServiceImpl implements UsersService {
             return student.get();
         }
         else {
-            throw new SchoolException("no student with id "+id+" found");
+            throw new NotFoundException("no student with id "+id+" found");
         }
     }
 
