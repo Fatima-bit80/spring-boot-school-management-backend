@@ -3,13 +3,16 @@ package com.dtp.school_management_backend.service.impl;
 import com.dtp.school_management_backend.dao.CourseRepository;
 import com.dtp.school_management_backend.dao.EnrollmentRepository;
 import com.dtp.school_management_backend.dao.MemberRepository;
+import com.dtp.school_management_backend.dto.EnrollmentDTO;
 import com.dtp.school_management_backend.entity.*;
+import com.dtp.school_management_backend.exception.SchoolException;
 import com.dtp.school_management_backend.service.EnrollmentService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EnrollmentServiceImpl implements EnrollmentService {
@@ -34,7 +37,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         if(member.getTeacher() != null){
             int teacherId = member.getTeacher().getTeacherId();
-            List<Enrollment> enrollments = enrollmentRepository.findEnrollmentRequestsForTeacher(teacherId);
+            List<Enrollment> enrollments = enrollmentRepository.findEnrollmentForTeachersCourses(teacherId);
 
             return enrollments;
 
@@ -43,6 +46,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             List<Enrollment> enrollments = enrollmentRepository.findEnrollmentsForStudent(studentId);
             return enrollments;
         }
+
+        //else -> admin
         return enrollmentRepository.findAll();
 
 
@@ -52,20 +57,26 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     @Transactional
-    public void deleteEnrollment(int enrollmentId, String email) throws IllegalAccessException {
+    public void deleteEnrollment(int enrollmentId, String email)  {
 
         Member member = memberRepository.findById(email).get();
 
-        Enrollment e = enrollmentRepository.findById(enrollmentId).get();
+        Optional<Enrollment> enrollment = enrollmentRepository.findById(enrollmentId);
+
+        if(!enrollment.isPresent()){
+            throw new SchoolException("enrollment doesn't exist");
+        }
+
+        Enrollment e = enrollment.get();
 
 
 
         if((member.getStudent() != null && member.getStudent().getStudentId() != e.getStudent().getStudentId())){
-            throw new IllegalAccessException("Student can't delete another student's enrollment");
+            throw new SchoolException("Student can't delete another student's enrollment");
         }
 
-        if( (member.getTeacher()!=null) && (e.getCourse().getTeacher().getTeacherId()) != e.getCourse().getTeacher().getTeacherId()){
-            throw new IllegalAccessException("teacher can't delete an enrollment of another teacher's course");
+        if( (member.getTeacher()!=null) && (e.getCourse().getTeacher().getTeacherId()) != member.getTeacher().getTeacherId()){
+            throw new SchoolException("teacher can't delete an enrollment of another teacher's course");
         }
         enrollmentRepository.deleteById(enrollmentId);
     }
@@ -75,15 +86,16 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Transactional
     public Enrollment saveEnrollment(String courseCode, String email) {
 
-
-
         Member member = memberRepository.findById(email).get();
         Student student = member.getStudent();
-        Course course = courseRepository.findById(courseCode).get();
+        Optional<Course> course1 = courseRepository.findById(courseCode);
+        if(!course1.isPresent()){
+            throw new SchoolException("course not found");
+        }
+        Course course = course1.get();
         Enrollment e = new Enrollment(course,student);
 
         return  enrollmentRepository.save(e);
-
 
     }
 
@@ -92,19 +104,23 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Override
     @Transactional
     // update approved or grades
-    public Enrollment updateEnrollment(int enrollmentId,Enrollment enrollment,String email) throws IllegalAccessException {
-        Enrollment e = enrollmentRepository.findById(enrollmentId).get();
+    public Enrollment updateEnrollment(int enrollmentId, EnrollmentDTO enrollment, String email)  {
+        Optional<Enrollment> enrollment1 = enrollmentRepository.findById(enrollmentId);
+        if(!enrollment1.isPresent()){
+            throw new SchoolException("enrollment not found");
+        }
+        Enrollment e = enrollment1.get();
 
         Member member = memberRepository.findById(email).get();
 
         if((member.getTeacher()!= null) && (member.getTeacher().getTeacherId() != e.getCourse().getTeacher().getTeacherId())) {
-            throw new IllegalAccessException("teacher can't update an enrollment of another teacher's course");
+            throw new SchoolException("teacher can't update an enrollment of another teacher's course");
         }
 
-        if(enrollment.getApproved() !=-1)
+        if(enrollment.getApproved() != null)
         e.setApproved(enrollment.getApproved());
 
-        if (enrollment.getGrade()!=-1)
+        if (enrollment.getGrade()!= null)
         e.setGrade(enrollment.getGrade());
 
 
@@ -114,16 +130,21 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
 
     @Override
-    public List<Enrollment> findEnrollmentsOfCourse(String code,String email) throws IllegalAccessException {
+    public List<Enrollment> findEnrollmentsOfCourse(String code,String email) {
+
         Member member = memberRepository.findById(email).get();
 
+        Optional<Course> course = courseRepository.findById(code);
+        if(!course.isPresent())
+            throw new SchoolException("course with code "+code+" not found");
 
         if(member.getTeacher() != null ){
             Teacher teacher = member.getTeacher();
             int teacherId = teacher.getTeacherId();
-            Course c =  courseRepository.findById(code).get();
+
+            Course c = course.get();
             if(c.getTeacher().getTeacherId() != teacherId){
-                throw new IllegalAccessException("teacher can't access an enrollment of another teacher's course");
+                throw new SchoolException("teacher can't access an enrollment of another teacher's course");
             }
         }
 

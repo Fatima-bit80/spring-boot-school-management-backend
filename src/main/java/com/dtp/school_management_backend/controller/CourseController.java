@@ -25,15 +25,11 @@ public class CourseController {
         this.schoolMapper = schoolMapper;
     }
 
-    //anyone can view all courses
-    //admins can view everything
-    //teachers/students can view restricted info
+    //admins can view all courses
     @GetMapping
-    public List<CourseDTO> getAllCourses(Authentication authentication) {
+    public List<CourseDTO> getAllCourses() {
 
-        String email = authentication.getName();
-
-        List<Course> courses = courseService.findAllCourses(email);
+        List<Course> courses = courseService.findAllCourses();
 
         List<CourseDTO> courseDTOS = new ArrayList<>();
         for (Course course : courses) {
@@ -43,7 +39,7 @@ public class CourseController {
         return courseDTOS;
     }
 
-    //for student to view available courses (not enrolled in them)
+    //for students to view available courses (not enrolled in them)
     @GetMapping("/available")
     public List<CourseDTO> getAvailableCourses(Authentication authentication)
     {
@@ -82,12 +78,11 @@ public class CourseController {
     {
         String email = authentication.getName();
 
-
         List<Course> courses = courseService.findCoursesOfTeacher(email);
 
         List<CourseDTO> courseDTOS = new ArrayList<>();
         for (Course course : courses) {
-            courseDTOS.add(schoolMapper.courseToCourseDto(course,false));
+            courseDTOS.add(schoolMapper.courseToCourseDto(course,true));
         }
 
         return courseDTOS;
@@ -105,4 +100,11 @@ public class CourseController {
 
         return schoolMapper.courseToCourseDto(savedCourse,true);
     }
+
+    //admins can delete courses
+    @DeleteMapping("/{code}")
+    public void deleteCourse(@PathVariable("code") String code) {
+        courseService.deleteCourse(code);
+    }
+
 }

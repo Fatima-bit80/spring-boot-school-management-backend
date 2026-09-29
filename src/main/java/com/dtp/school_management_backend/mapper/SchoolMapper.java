@@ -12,9 +12,9 @@ public interface SchoolMapper {
     TeacherDTO teacherToTeacherDto(Teacher teacher);
 
     EnrollmentDTO enrollmentToEnrollmentDto(Enrollment enrollment);
-    Enrollment enrollmentDtoToEnrollment(EnrollmentDTO enrollmentDTO);
+  //  Enrollment enrollmentDtoToEnrollment(EnrollmentDTO enrollmentDTO);
 
-    CourseDTO courseToCourseDto(Course course,boolean isAdmin);
+    CourseDTO courseToCourseDto(Course course,boolean showEnrollments);
     Course courseDtoToCourse(CourseDTO courseDTO);
 
     MemberDTO memberToMemberDTO(Member member);

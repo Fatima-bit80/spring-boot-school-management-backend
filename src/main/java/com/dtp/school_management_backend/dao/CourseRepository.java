@@ -20,12 +20,9 @@ public interface CourseRepository extends JpaRepository<Course, String> {
             "  WHERE e.student.studentId = ?1)")
     List<Course> findAvailableCoursesForStudent(int studentId);
 
-    @Query("SELECT c " +
-            "FROM Course c " +
-            "WHERE c.code IN( " +
-            "SELECT e.course.code " +
+    @Query( "SELECT e.course " +
             "FROM Enrollment e " +
-            "WHERE e.student.studentId = ?1)")
+            "WHERE e.student.studentId = ?1")
     List<Course> findCoursesOfStudent(int studentId);
 
 

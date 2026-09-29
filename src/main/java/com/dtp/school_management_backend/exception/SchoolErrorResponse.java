@@ -1,15 +1,15 @@
 package com.dtp.school_management_backend.exception;
 
-public class IllegalAccessErrorResponse {
+public class SchoolErrorResponse {
 
     private int status;
     private String message;
     private long timeStamp;
 
-    public IllegalAccessErrorResponse() {
+    public SchoolErrorResponse() {
     }
 
-    public IllegalAccessErrorResponse(int status, String message, long timeStamp) {
+    public SchoolErrorResponse(int status, String message, long timeStamp) {
         this.status = status;
         this.message = message;
         this.timeStamp = timeStamp;

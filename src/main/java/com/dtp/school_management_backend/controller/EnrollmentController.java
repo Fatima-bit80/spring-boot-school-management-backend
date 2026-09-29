@@ -41,6 +41,7 @@ public class EnrollmentController {
 
     }
 
+
     @GetMapping("/{courseCode}")
     public List<EnrollmentDTO> getEnrollmentsOfCourse(@PathVariable String courseCode,Authentication authentication) throws IllegalAccessException {
         String email = authentication.getName();
@@ -54,53 +55,42 @@ public class EnrollmentController {
         return enrollmentDTOList;
     }
 
-    @DeleteMapping("/{courseCode}")
-    public void deleteEnrollment(@PathVariable int courseCode, Authentication authentication) throws IllegalAccessException {
-        String email = authentication.getName();
-
-        enrollmentService.deleteEnrollment(courseCode,email);
-
-    }
 
 
-    @PostMapping("/{courseCode}")
-    public EnrollmentDTO requestEnrollment(@PathVariable String courseCode, Authentication authentication) {
+
+    @PostMapping
+    public EnrollmentDTO requestEnrollment(@RequestParam String code, Authentication authentication) {
 
         String email = authentication.getName();
 
-        Enrollment e = enrollmentService.saveEnrollment(courseCode, email);
+        Enrollment e = enrollmentService.saveEnrollment(code, email);
 
         return schoolMapper.enrollmentToEnrollmentDto(e);
     }
 
 
 
-/*
-    //todo how to expose endpoint for accept
-    @PutMapping("/accept/{requestId}")
-    public EnrollmentDTO acceptRequest(@PathVariable int requestId,Authentication authentication) {
-
-        String email = authentication.getName();
-        Member member = schoolService.findMemberByEmail(email);
-        int teacherId = member.getTeacher().getTeacherId();
-
-        return schoolService.acceptEnrollmentRequest(requestId, teacherId);
-    }*/
-
-
-
 
     //accept request or change grade
     @PutMapping("/{enrollmentId}")
-    public EnrollmentDTO updateEnrollment(@PathVariable int enrollmentId,@RequestBody EnrollmentDTO enrollmentDTO,Authentication authentication) throws IllegalAccessException {
+    public EnrollmentDTO updateEnrollment(@PathVariable int enrollmentId,@RequestBody EnrollmentDTO enrollmentDTO,Authentication authentication) {
 
         String email = authentication.getName();
 
-        Enrollment enrollment =  schoolMapper.enrollmentDtoToEnrollment(enrollmentDTO);
+      //  Enrollment enrollment =  schoolMapper.enrollmentDtoToEnrollment(enrollmentDTO);
 
-        Enrollment updateEnrollment =   enrollmentService.updateEnrollment(enrollmentId,enrollment,email);
+        Enrollment updateEnrollment =   enrollmentService.updateEnrollment(enrollmentId,enrollmentDTO,email);
 
         return schoolMapper.enrollmentToEnrollmentDto(updateEnrollment);
+
+    }
+
+
+    @DeleteMapping("/{courseCode}")
+    public void deleteEnrollment(@PathVariable int courseCode, Authentication authentication) {
+        String email = authentication.getName();
+
+        enrollmentService.deleteEnrollment(courseCode,email);
 
     }
 

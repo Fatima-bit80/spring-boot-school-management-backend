@@ -25,18 +25,20 @@ public class StudentController {
         this.schoolMapper = schoolMapper;
     }
 
+    // student can view his details
+    //admin can view details of students
     @GetMapping("/{studentId}")
-    public StudentDTO getStudentById(@PathVariable int studentId,Authentication authentication) throws IllegalAccessException {
+    public StudentDTO getStudentById(@PathVariable int studentId,Authentication authentication)  {
 
         String email = authentication.getName();
 
         Student student = usersService.findStudentByIdForRequester(studentId,email);
 
         return schoolMapper.studentToStudentDto(student);
-
     }
 
 
+    // admin can view details of all students
     @GetMapping
     public List<StudentDTO> getAllStudents() {
 
@@ -50,6 +52,7 @@ public class StudentController {
     }
 
 
+    // anyone can create a students account
     @PostMapping
     public StudentDTO createStudentAccount(@RequestBody StudentDTO studentDTO) {
 
@@ -59,6 +62,7 @@ public class StudentController {
     }
 
 
+    //admin can delete a student account
     @DeleteMapping("/{studentId}")
     public void deleteStudentAccount(@PathVariable int studentId) {
         usersService.deleteStudentById(studentId);

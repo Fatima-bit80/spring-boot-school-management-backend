@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/teachers")
+@RequestMapping("/api/v1/teachers")
 public class TeacherController {
 
 
@@ -27,7 +27,7 @@ public class TeacherController {
     }
 
     @GetMapping("/{teacherId}")
-    public TeacherDTO getTeacher(@RequestParam int teacherId,Authentication authentication) throws IllegalAccessException {
+    public TeacherDTO getTeacher(@PathVariable int teacherId,Authentication authentication)  {
         String email = authentication.getName();
 
         Teacher teacher = usersService.findTeacherById(teacherId,email);
@@ -59,7 +59,7 @@ public class TeacherController {
 
 
     @DeleteMapping("/{teacherId}")
-    public void deleteTeacherAccount(@RequestParam int teacherId) {
+    public void deleteTeacherAccount(@PathVariable int teacherId) {
         usersService.deleteTeacherById(teacherId);
     }
 

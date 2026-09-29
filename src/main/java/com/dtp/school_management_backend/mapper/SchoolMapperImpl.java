@@ -11,7 +11,7 @@ import java.util.List;
 
 
 @Component
-public class SchoolMapperImpl implements  SchoolMapper {
+public class SchoolMapperImpl implements SchoolMapper {
 
     private StudentRepository studentRepository;
     private TeacherRepository teacherRepository;
@@ -34,59 +34,61 @@ public class SchoolMapperImpl implements  SchoolMapper {
 
     @Override
     public StudentDTO studentToStudentDto(Student student) {
-       return new StudentDTO(student.getMember().getEmail(), null,student.getMember().getRole(),student.getMember().getActive(),student.getStudentId(),student.getFirstName(),student.getLastName(),student.getYear());
+        return new StudentDTO(student.getMember().getEmail(), null, student.getMember().getRole(), student.getMember().getActive(), student.getStudentId(), student.getFirstName(), student.getLastName(), student.getYear());
     }
 
 
     @Override
     public TeacherDTO teacherToTeacherDto(Teacher teacher) {
-        return new TeacherDTO(teacher.getMember().getEmail(), null,teacher.getMember().getRole(),teacher.getMember().getActive(),teacher.getTeacherId(),teacher.getFirstName(),teacher.getLastName());
+        return new TeacherDTO(teacher.getMember().getEmail(), null, teacher.getMember().getRole(), teacher.getMember().getActive(), teacher.getTeacherId(), teacher.getFirstName(), teacher.getLastName());
     }
-
 
 
     @Override
     public EnrollmentDTO enrollmentToEnrollmentDto(Enrollment enrollment) {
-        return new EnrollmentDTO(enrollment.getId(),enrollment.getCourse().getCode(),enrollment.getStudent().getStudentId(),enrollment.getGrade(),enrollment.getApproved());
+        return new EnrollmentDTO(enrollment.getId(), enrollment.getCourse().getCode(), enrollment.getStudent().getStudentId(), enrollment.getGrade(), enrollment.getApproved());
     }
+
+//    @Override
+//    public Enrollment enrollmentDtoToEnrollment(EnrollmentDTO enrollmentDTO) {
+//        return new Enrollment(enrollmentDTO.getId(), courseRepository.findById(enrollmentDTO.getCourseCode()).get(), studentRepository.findById(enrollmentDTO.getStudentId()).get(), enrollmentDTO.getGrade() == null ? -1 : enrollmentDTO.getGrade(), enrollmentDTO.getApproved() == null ? -1 : enrollmentDTO.getApproved());
+//    }
 
     @Override
-    public Enrollment enrollmentDtoToEnrollment(EnrollmentDTO enrollmentDTO) {
-        return new Enrollment(enrollmentDTO.getId(),courseRepository.findById(enrollmentDTO.getCourseCode()).get(), studentRepository.findById(enrollmentDTO.getStudentId()).get(), enrollmentDTO.getGrade() == null ?-1:  enrollmentDTO.getGrade(),enrollmentDTO.getApproved()==null?-1: enrollmentDTO.getApproved());
-    }
+    public CourseDTO courseToCourseDto(Course course, boolean showEnrollments) {
 
-    @Override
-    public CourseDTO courseToCourseDto(Course course,boolean isAdmin) {
-List<Integer> enrollments = null;
+        List<Integer> enrollments = null;
 
+        if (showEnrollments) {
+            enrollments = new ArrayList<>();
 
-if(isAdmin) {
-    enrollments = new ArrayList<>();
-
-    for (Enrollment e : course.getEnrollments()) {
-        enrollments.add(e.getId());
-    }
-}
-        return new CourseDTO(course.getCode(),course.getName(),course.getYear(),course.getTeacher().getTeacherId(),enrollments);
+            for (Enrollment e : course.getEnrollments()) {
+                enrollments.add(e.getId());
+            }
+        }
+        return new CourseDTO(course.getCode(), course.getName(), course.getYear(), course.getTeacher().getTeacherId(), enrollments);
     }
 
     @Override
     public Course courseDtoToCourse(CourseDTO courseDTO) {
         List<Enrollment> enrollments = new ArrayList<>();
-        for (int enrollmentId:courseDTO.getEnrollments()){
-            enrollments.add(enrollmentRepository.findById(enrollmentId).get());
+
+        if(courseDTO.getEnrollments()!=null) {
+            for (int enrollmentId : courseDTO.getEnrollments()) {
+                enrollments.add(enrollmentRepository.findById(enrollmentId).get());
+            }
         }
-        return new Course(courseDTO.getCode(),courseDTO.getName(),courseDTO.getYear(),teacherRepository.findById(courseDTO.getTeacherId()).get(),enrollments);
+        return new Course(courseDTO.getCode(), courseDTO.getName(), courseDTO.getYear(), teacherRepository.findById(courseDTO.getTeacherId()).get(), enrollments);
     }
 
     @Override
     public MemberDTO memberToMemberDTO(Member member) {
-        return new MemberDTO(member.getEmail(),null,member.getRole(),member.getActive());
+        return new MemberDTO(member.getEmail(), null, member.getRole(), member.getActive());
     }
 
     @Override
-    public Member memberDtoToMember(MemberDTO memberDTO){
-        return new Member(memberDTO.getEmail(),memberDTO.getPassword(),memberDTO.getRole(),memberDTO.getActive());
+    public Member memberDtoToMember(MemberDTO memberDTO) {
+        return new Member(memberDTO.getEmail(), memberDTO.getPassword(), memberDTO.getRole(), memberDTO.getActive());
 
     }
 }

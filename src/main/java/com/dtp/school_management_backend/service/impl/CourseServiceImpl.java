@@ -3,12 +3,14 @@ package com.dtp.school_management_backend.service.impl;
 
 import com.dtp.school_management_backend.dao.*;
 import com.dtp.school_management_backend.entity.*;
+import com.dtp.school_management_backend.exception.SchoolException;
 import com.dtp.school_management_backend.service.CourseService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -24,13 +26,8 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> findAllCourses(String email) {
-        Member m =  memberRepository.findById(email).get();
-
-        List<Course> courses = courseRepository.findAll();
-
-
-        return courses;
+    public List<Course> findAllCourses() {
+        return courseRepository.findAll();
     }
 
     @Override
@@ -59,10 +56,29 @@ public class CourseServiceImpl implements CourseService {
             return courseRepository.findCoursesOfTeacher(teacherId);
     }
 
+    @Override
+    public void deleteCourse(String code) {
+
+        Optional<Course> s = courseRepository.findById(code);
+        if(s.isPresent()) {
+            courseRepository.deleteById(code);
+        }else {
+            throw new SchoolException("COURSE_NOT_FOUND");
+        }
+
+    }
+
 
     @Override
     @Transactional
     public Course saveCourse(Course course) {
+
+        Optional<Course> c = courseRepository.findById(course.getCode());
+
+        if(c.isPresent()) {
+            throw new SchoolException("COURSE_ALREADY_EXISTS");
+        }
+
        return courseRepository.save(course);
     }
 

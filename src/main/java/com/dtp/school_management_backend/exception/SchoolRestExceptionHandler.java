@@ -10,10 +10,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class SchoolRestExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<IllegalAccessErrorResponse> handleException(IllegalAccessException exc) {
-        IllegalAccessErrorResponse error = new IllegalAccessErrorResponse();
+    public ResponseEntity<SchoolErrorResponse> handleException(SchoolException exc) {
+        SchoolErrorResponse error = new SchoolErrorResponse();
         error.setStatus(HttpStatus.FORBIDDEN.value());
-        error.setMessage(exc.getMessage());
+        //todo remove "EXCEPTION"
+        error.setMessage("EXCEPTION: "+exc.getMessage());
         error.setTimeStamp(System.currentTimeMillis());
 
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);

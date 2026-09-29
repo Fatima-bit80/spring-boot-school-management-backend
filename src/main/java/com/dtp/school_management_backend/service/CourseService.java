@@ -15,13 +15,9 @@ public interface CourseService {
 
 
   Course saveCourse(Course course);
-  List<Course> findAllCourses(String email);
+  List<Course> findAllCourses();
   List<Course> findAvailableCourses(String email);
   List<Course> findCoursesOfStudent(String email);
   List<Course> findCoursesOfTeacher(String email);
-
-
-
-
-
+  void deleteCourse(String code);
 }

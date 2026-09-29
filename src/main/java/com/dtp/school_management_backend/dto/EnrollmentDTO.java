@@ -7,22 +7,22 @@ import jakarta.persistence.*;
 public class EnrollmentDTO {
 
 
-    private int id;
+    private Integer id;
 
 
     private String courseCode;
 
 
-    private int studentId;
+    private Integer studentId;
 
-    private Integer grade;
+    private Integer grade; // can be null
 
-    private Integer approved;
+    private Integer approved; // can be null
 
     public EnrollmentDTO() {
     }
 
-    public EnrollmentDTO(int id, String courseCode, int studentId, Integer grade, Integer approved) {
+    public EnrollmentDTO(Integer id, String courseCode, Integer studentId, Integer grade, Integer approved) {
         this.id = id;
         this.courseCode = courseCode;
         this.studentId = studentId;
@@ -30,12 +30,20 @@ public class EnrollmentDTO {
         this.approved = approved;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(Integer studentId) {
+        this.studentId = studentId;
     }
 
     public Integer getGrade() {
@@ -62,12 +70,6 @@ public class EnrollmentDTO {
         this.courseCode = courseCode;
     }
 
-    public int getStudentId() {
-        return studentId;
-    }
 
-    public void setStudentId(int studentId) {
-        this.studentId = studentId;
-    }
 }
 

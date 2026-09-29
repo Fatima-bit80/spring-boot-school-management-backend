@@ -16,14 +16,14 @@ public interface UsersService {
 
 
     Student saveStudent(StudentDTO student);
-    Student findStudentByIdForRequester(int id, String email) throws IllegalAccessException;
+    Student findStudentByIdForRequester(int id, String email);
     List<Student> findAllStudents();
 
 
 
     Teacher saveTeacher(TeacherDTO teacher);
     List<Teacher> findAllTeachers();
-    Teacher findTeacherById(int teacherId, String email) throws IllegalAccessException;
+    Teacher findTeacherById(int teacherId, String email);
 
 
     void deleteStudentById(int studentId);

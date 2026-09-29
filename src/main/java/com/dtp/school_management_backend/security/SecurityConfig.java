@@ -43,15 +43,15 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(configurer ->
                         configurer
-                                .requestMatchers(HttpMethod.POST,"/api/v1/students").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/api/v1/students/{studentId}").hasAnyRole("STUDENT","ADMIN")
                                 .requestMatchers(HttpMethod.GET,"/api/v1/students").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.GET,"/api/v1/students/{studentId}").hasRole("STUDENT")
+                                .requestMatchers(HttpMethod.POST,"/api/v1/students").permitAll()
                                 .requestMatchers(HttpMethod.DELETE,"/api/v1/students/{studentId}").hasRole("ADMIN")
 
 
-                                .requestMatchers(HttpMethod.POST,"/api/v1/teachers").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/api/v1/teachers/{teacherId}").hasAnyRole("TEACHER","ADMIN")
                                 .requestMatchers(HttpMethod.GET,"/api/v1/teachers").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.GET,"/api/v1/teachers/{teacherId}").hasRole("TEACHER")
+                                .requestMatchers(HttpMethod.POST,"/api/v1/teachers").permitAll()
                                 .requestMatchers(HttpMethod.DELETE,"/api/v1/teachers/{teacherId}").hasRole("ADMIN")
 
 
@@ -60,15 +60,17 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET,"/api/v1/courses/enrolled").hasRole("STUDENT")
                                 .requestMatchers(HttpMethod.GET,"/api/v1/courses/taught").hasRole("TEACHER")
                                 .requestMatchers(HttpMethod.POST,"/api/v1/courses").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE,"/api/v1/courses/{code}").hasRole("ADMIN")
 
 
                                 .requestMatchers(HttpMethod.GET,"/api/v1/enrollments").hasAnyRole("STUDENT", "TEACHER","ADMIN")
                                 .requestMatchers(HttpMethod.GET,"/api/v1/enrollments/{courseCode}").hasAnyRole( "TEACHER","ADMIN")
-                                .requestMatchers(HttpMethod.DELETE,"/api/enrollments/{courseCode}").hasAnyRole("STUDENT","TEACHER","ADMIN")
                                 .requestMatchers(HttpMethod.POST,"/api/v1/enrollments").hasRole("STUDENT")
                                 .requestMatchers(HttpMethod.PUT,"/api/v1/enrollments/{enrollmentId}").hasRole("TEACHER")
+                                .requestMatchers(HttpMethod.DELETE,"/api/v1/enrollments/{courseCode}").hasAnyRole("STUDENT","TEACHER","ADMIN")
 
-                                  .anyRequest().authenticated()
+
+                                .anyRequest().authenticated()
                 );
 
         http.httpBasic(Customizer.withDefaults());
